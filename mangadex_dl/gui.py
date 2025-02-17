@@ -19,12 +19,14 @@ from mangadex_dl import archive as ar
 from mangadex_dl import download as dl
 from mangadex_dl import duplicate as dup
 
+
 def init_gui(args):
     if args.manga_urls:
         for manga_url in args.manga_urls:
             _dl_gui(manga_url, args)
     else:
         _dl_gui("", args)
+
 
 def _dl_gui(manga_url, args):
     root = Tk()
@@ -37,6 +39,7 @@ def _dl_gui(manga_url, args):
         print(traceback.format_exc())
         messagebox.showinfo(message=f"Error: {e}\n\nSkip download.")
 
+
 class _MangadexDlGui:
 
     def __init__(self, root, manga_url, args):
@@ -45,7 +48,7 @@ class _MangadexDlGui:
         self.block = False
         self.tree_a = None
         self.tree_b = None
-        self.padding = 5 # i don't see how to add a margin through the global styles, so we add this every time in each widget
+        self.padding = 5  # i don't see how to add a margin through the global styles, so we add this every time in each widget
         self.indicator = None
         self.status = StringVar(value="Enter a URL or search query in the searchbar")
         self.future = None
@@ -58,6 +61,7 @@ class _MangadexDlGui:
 
         # manga-relative vars
         self.manga_info = None
+        self.manga_preview_info = None
         self.chapters_list = []
         self.scanlation_groups = []
         self.chapters_list_selected = []
@@ -134,28 +138,28 @@ class _MangadexDlGui:
                 self.set_widget_state(child, state)
         else:
             try:
-                if widget.winfo_class() == "Listbox": # i cant take it anymore
+                if widget.winfo_class() == "Listbox":  # i cant take it anymore
                     widget.configure(state="normal" if state else "disable")
                 else:
                     widget.configure(state="enable" if state else "disable")
-            except:
+            except Exception:
                 pass
 
     def update_manga_info(self):
-        s = f"Title: {self.manga_info.title}\n"\
-            f"Author: {', '.join(self.manga_info.authors)}\n"\
-            f"Artist: {', '.join(self.manga_info.artists)}\n"\
-            f"Year: {self.manga_info.year}\n"\
-            f"Status: {self.manga_info.status}\n\n"\
-            f"Last Volume: {self.manga_info.last_volume}\n"\
-            f"Last Chapter: {self.manga_info.last_chapter}\n\n"\
-            f"Original Language: {self.manga_info.original_language}\n"\
-            f"Content Rating: {self.manga_info.content_rating}\n"\
-            f"Demographic: {self.manga_info.demographic}\n\n"\
-            f"Format: {', '.join(self.manga_info.tags.format)}\n"\
-            f"Themes: {', '.join(self.manga_info.tags.theme)}\n"\
-            f"Genres: {', '.join(self.manga_info.tags.genre)}\n\n"\
-            f"Description: {self.manga_info.description}"
+        s = f"Title: {self.manga_preview_info.title}\n"\
+            f"Author: {', '.join(self.manga_preview_info.authors)}\n"\
+            f"Artist: {', '.join(self.manga_preview_info.artists)}\n"\
+            f"Year: {self.manga_preview_info.year}\n"\
+            f"Status: {self.manga_preview_info.status}\n\n"\
+            f"Last Volume: {self.manga_preview_info.last_volume}\n"\
+            f"Last Chapter: {self.manga_preview_info.last_chapter}\n\n"\
+            f"Original Language: {self.manga_preview_info.original_language}\n"\
+            f"Content Rating: {self.manga_preview_info.content_rating}\n"\
+            f"Demographic: {self.manga_preview_info.demographic}\n\n"\
+            f"Format: {', '.join(self.manga_preview_info.tags.format)}\n"\
+            f"Themes: {', '.join(self.manga_preview_info.tags.theme)}\n"\
+            f"Genres: {', '.join(self.manga_preview_info.tags.genre)}\n\n"\
+            f"Description: {self.manga_preview_info.description}"
         self.manga_text_info.set(s)
 
     def resolve_duplicates_manual_gui(self, chapters_list, duplicated_chapters_list, scanlation_groups):
@@ -168,11 +172,11 @@ class _MangadexDlGui:
         index = 0
         for group in self.scanlation_groups:
             label = ttk.Label(self.tab_scanlate, text=group["attributes"]["name"])
-            label.grid(column=0, row=index+1, sticky=(E), pady=self.padding, padx=self.padding)
+            label.grid(column=0, row=index + 1, sticky=(E), pady=self.padding, padx=self.padding)
 
             combobox = ttk.Combobox(self.tab_scanlate, state="readonly", textvariable=self.scanlation_groups_priority[index])
             combobox["values"] = ("1", "2", "3", "4", "5")
-            combobox.grid(column=1, row=index+1, sticky=(W), pady=self.padding, padx=self.padding)
+            combobox.grid(column=1, row=index + 1, sticky=(W), pady=self.padding, padx=self.padding)
 
             index += 1
 
@@ -291,19 +295,20 @@ class _MangadexDlGui:
     ##########################
     #       CALLBACKS        #
     ##########################
+
     def cb_on_closing(self):
         try:
             self.thread_pool.shutdown(wait=False, cancel_futures=True)
             if self.lib_options["thread_pool"]:
                 self.lib_options["thread_pool"].shutdown(wait=False, cancel_futures=True)
             self.root.destroy()
-        except Exception as e:
+        except Exception:
             pass
 
     def cb_search_result_select(self, e):
         if e:
-            self.manga_info = self.manga_list_found[e[0]]
-            self.manga_url.set(self.manga_info.uuid)
+            self.manga_preview_info = self.manga_list_found[e[0]]
+            self.manga_url.set(self.manga_preview_info.uuid)
             self.update_manga_info()
 
     def cb_get_manga_info(self):
@@ -333,6 +338,7 @@ class _MangadexDlGui:
             return
 
         self.manga_info = utils.get_manga_info(self.manga_url.get(), self.args.language.get())
+        self.manga_preview_info = self.manga_info
         self.update_manga_info()
 
         self.status.set("Receiving available chapters...")
@@ -426,6 +432,7 @@ class _MangadexDlGui:
     ##########################
     # INIT INTERFACE SECTION #
     ##########################
+
     def init_tab_settings(self):
         frame = ttk.Frame()
 
@@ -545,7 +552,7 @@ class _MangadexDlGui:
         entry = ttk.Entry(searchbar_frame, textvariable=self.manga_url)
         entry.grid(column=1, row=0, sticky=(E, W), pady=self.padding, padx=self.padding)
 
-        button = ttk.Button(searchbar_frame, text="Search", command=lambda:self.async_run(self.cb_get_manga_info))
+        button = ttk.Button(searchbar_frame, text="Search", command=lambda: self.async_run(self.cb_get_manga_info))
         button.grid(column=2, row=0, pady=self.padding, padx=self.padding)
         ###
         search_results_frame = ttk.Labelframe(frame, text="Search Results")
@@ -616,7 +623,7 @@ class _MangadexDlGui:
         button_move_all = ttk.Button(frame, text="Move all", command=self.cb_move_all_to_selected)
         button_move_all.grid(column=0, row=2, sticky=(W), pady=self.padding, padx=self.padding)
 
-        button_download = ttk.Button(frame, text="Start download", command=lambda:self.async_run(self.cb_download_chapters))
+        button_download = ttk.Button(frame, text="Start download", command=lambda: self.async_run(self.cb_download_chapters))
         button_download.grid(column=2, row=2, sticky=(E), pady=self.padding, padx=self.padding)
 
         return frame
@@ -625,7 +632,7 @@ class _MangadexDlGui:
         # ok, we can't make scrollbar for frame in tk
         frame = ttk.Frame()
 
-        label = ttk.Label(frame, text="You can manually prioritize scanlate groups.\n"\
+        label = ttk.Label(frame, text="You can manually prioritize scanlate groups.\n"
                           "Specify this in the settings tab, reload the URL and set the priorities in this tab.")
         label.grid(column=0, row=0, pady=self.padding, padx=self.padding)
 
@@ -633,15 +640,15 @@ class _MangadexDlGui:
 
     def init_statusbar(self, root):
         frame = ttk.Frame(root)
-        frame.rowconfigure(0, weight=0) # progressbar_chap, indicator
-        frame.rowconfigure(1, weight=0) # progressbar_page, help button
-        frame.rowconfigure(2, weight=0) # status text
-        frame.columnconfigure(0, weight=0) # progressbar labels
-        frame.columnconfigure(1, weight=1) # progressbar, status
-        frame.columnconfigure(2, weight=0) # progress numbers
+        frame.rowconfigure(0, weight=0)  # progressbar_chap, indicator
+        frame.rowconfigure(1, weight=0)  # progressbar_page, help button
+        frame.rowconfigure(2, weight=0)  # status text
+        frame.columnconfigure(0, weight=0)  # progressbar labels
+        frame.columnconfigure(1, weight=1)  # progressbar, status
+        frame.columnconfigure(2, weight=0)  # progress numbers
         frame.grid_columnconfigure(2, minsize=90)
-        frame.columnconfigure(3, weight=0) # separator
-        frame.columnconfigure(4, weight=0) # indicator, help button
+        frame.columnconfigure(3, weight=0)  # separator
+        frame.columnconfigure(4, weight=0)  # indicator, help button
 
         ###
         label_a = ttk.Label(frame, text="Chapters: ")
@@ -679,4 +686,3 @@ class _MangadexDlGui:
         ###
 
         return frame
-

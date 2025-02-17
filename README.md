@@ -16,7 +16,7 @@ $ pip install -r requirements.txt
 ```
 $ start.py
 or
-$ python -m mangadex_dl [manga_urls]
+$ python3 -m mangadex_dl [manga_urls]
 ```
 
 ## Features
@@ -50,7 +50,7 @@ Also some examples of INVALID input:
 
 Console version:
 ```
-$ python -m mangadex_dl
+$ python3 -m mangadex_dl
 
 Enter URL or text to search by title. (leave blank to complete)
 > yotsuba
@@ -103,7 +103,7 @@ Archiving completed successfully
 Manga "Yotsuba&!" was successfully downloaded
 ```
 
-Instead of manually inserting manga links, you can use a file redirection with some config options:
+Instead of manually inserting manga links, you can use a file redirection with console config options:
 ```
 $ python -m mangadex_dl < list.txt
 ```

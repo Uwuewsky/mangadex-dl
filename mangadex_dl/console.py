@@ -17,7 +17,7 @@ def init_console(args):
     if not args.manga_urls:
         while True:
             try:
-                manga_input = input("\nEnter URL or text to search "\
+                manga_input = input("\nEnter URL or text to search "
                                     "by title. (leave blank to complete)\n> ")
             except EOFError:
                 break
@@ -31,6 +31,7 @@ def init_console(args):
             _dl_console(manga_url, args)
         except Exception:
             print("{}\nSkip download.".format(traceback.format_exc()))
+
 
 def _dl_console(manga_url, args):
     print("\nReceiving manga's info...")
@@ -53,9 +54,9 @@ def _dl_console(manga_url, args):
 
     # i/o for chapters to download
     if not args.download:
-        dl_input = input("\nEnter chapters to download:"\
-                         "\n(see README for examples of valid format) "\
-                         "(leave blank to cancel)"\
+        dl_input = input("\nEnter chapters to download:"
+                         "\n(see README for examples of valid format) "
+                         "(leave blank to cancel)"
                          "\n> ")
         if dl_input == "":
             return
@@ -83,6 +84,7 @@ def _dl_console(manga_url, args):
 
     print(f"\nManga \"{manga_info.title}\" was successfully downloaded")
 
+
 def _search_manga_info(manga_url, language):
 
     if utils.get_uuid(manga_url):
@@ -105,11 +107,13 @@ def _search_manga_info(manga_url, language):
 
     return manga_list_found[int(user_input)-1]
 
+
 def _print_found_manga_list(manga_list):
     print("The following titles were found on request:")
     for i, manga in enumerate(manga_list, start=1):
         print("{:2}. {} ({}) by {}".format(
             i, manga.title, manga.year, ", ".join(manga.authors)))
+
 
 def _print_available_chapters(chapters_list):
 
@@ -127,12 +131,13 @@ def _print_available_chapters(chapters_list):
         print(f"{chapter_name:>6}", end="")
     print()
 
+
 def _resolve_duplicates_manual_console(chapters_list,
                                        duplicates_list,
                                        scanlation_groups):
     for group in scanlation_groups:
-        group_priority = input("Specify priority for "\
-                               f"{group['attributes']['name']}. "\
+        group_priority = input("Specify priority for "
+                               f"{group['attributes']['name']}. "
                                "[1-5], highest is 1.\n> ")
         group["priority"] = group_priority
     print("Groups are prioritized\n")
@@ -142,4 +147,3 @@ def _resolve_duplicates_manual_console(chapters_list,
                                                            scanlation_groups)
 
     return chapters_list
-

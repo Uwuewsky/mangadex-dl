@@ -89,7 +89,8 @@ def _get_chapters_from_range(chapters_list, dl_range):
             if (not chapter_volume and dl_range["start"]["volume"] == "u")\
                or (chapter_volume == dl_range["start"]["volume"]):
 
-                # if the current chapter name is the same as the target chapter name
+                # if the current chapter name is
+                # same as the target chapter name
                 # or if no target chapter is specified
                 if chapter_name == dl_range["start"]["chapter"]\
                    or not dl_range["start"]["chapter"]:
@@ -99,7 +100,7 @@ def _get_chapters_from_range(chapters_list, dl_range):
 
         if is_in_range:
             # range end point check
-            # if the current volume name is the same as the target volume name
+            # if the current volume name is same as the target volume name
             # or if no target volume is specified
             if (not chapter_volume and dl_range["end"]["volume"] == "u")\
                or (chapter_volume == dl_range["end"]["volume"]):
@@ -107,7 +108,8 @@ def _get_chapters_from_range(chapters_list, dl_range):
                 # this volume is the last
                 volume_last = chapter_volume
 
-                # if the current chapter name is the same as the target chapter name
+                # if the current chapter name
+                # same as the target chapter name
                 if chapter_name == dl_range["end"]["chapter"]:
                     chapter_last = chapter_name
 

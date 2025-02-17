@@ -8,6 +8,7 @@ from functools import lru_cache
 
 import mangadex_dl.download as dl
 
+
 def resolve_duplicated_chapters(chapters_list,
                                 resolve,
                                 resolve_manual_function):
@@ -47,6 +48,7 @@ def resolve_duplicated_chapters(chapters_list,
                                    duplicates_list,
                                    scanlation_groups)
 
+
 def get_duplicated_chapters(chapters_list):
     """
     Return a nested list of duplicates like:
@@ -69,6 +71,7 @@ def get_duplicated_chapters(chapters_list):
 
     return duplicates_list
 
+
 def get_scanlation_groups_from_duplicates(duplicates_list):
     scanlation_groups_id = set()
     scanlation_groups = []
@@ -83,6 +86,7 @@ def get_scanlation_groups_from_duplicates(duplicates_list):
         scanlation_groups.append(get_scanlation_group_info(group_id))
 
     return scanlation_groups
+
 
 def resolve_scanlate_priority_function(chapters_list,
                                        duplicates_list,
@@ -122,10 +126,12 @@ def resolve_scanlate_priority_function(chapters_list,
 
     return chapters_list
 
+
 def get_chapter_scanlation_id(chapter):
     for relation in chapter["relationships"]:
         if relation["type"] == "scanlation_group":
             return relation["id"]
+
 
 @lru_cache(maxsize=16)
 def get_scanlation_group_info(group_id):

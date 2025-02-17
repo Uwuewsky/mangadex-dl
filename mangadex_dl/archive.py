@@ -7,6 +7,7 @@ import shutil
 import zipfile
 from pathlib import Path
 
+
 def archive_manga(manga_dir: Path, archive_mode: str, is_keep: bool, ext: str,
                   gui: dict = {}) -> None:
 
@@ -23,7 +24,7 @@ def archive_manga(manga_dir: Path, archive_mode: str, is_keep: bool, ext: str,
         _archive_directory(directory, ext, is_keep)
         dir_archived += 1
 
-        if gui.get("set", False):
+        if gui.get("set"):
             gui["progress_chapter"].set(
                 (dir_archived/dir_max)*100)
             gui["progress_chapter_text"].set(
@@ -31,7 +32,9 @@ def archive_manga(manga_dir: Path, archive_mode: str, is_keep: bool, ext: str,
         else:
             print(f"\r  Archiving [{dir_archived:3}/{dir_max:3}]...", end="")
 
-def _archive_directory(directory: Path, ext: str, is_keep: bool = True) -> None:
+
+def _archive_directory(directory: Path, ext: str,
+                       is_keep: bool = True) -> None:
     zip_name = directory.with_suffix(directory.suffix + f".{ext}")
 
     with zipfile.ZipFile(zip_name, mode="w",
@@ -42,6 +45,7 @@ def _archive_directory(directory: Path, ext: str, is_keep: bool = True) -> None:
 
     if not is_keep:
         shutil.rmtree(directory)
+
 
 def _find_directories(manga_dir: Path, archive_mode: str) -> list[Path]:
     dir_list = []
@@ -58,5 +62,6 @@ def _find_directories(manga_dir: Path, archive_mode: str) -> list[Path]:
 
     # skip directories that have already been archived before
     dir_list = list(filter(lambda f: not (f.with_suffix(".zip").is_file()
-                                          or f.with_suffix(".cbz").is_file()), dir_list))
+                                          or f.with_suffix(".cbz").is_file()),
+                           dir_list))
     return dir_list
