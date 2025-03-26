@@ -74,11 +74,11 @@ def _dl_console(manga_url, args):
                                                    manga_info.uuid)
 
     dl.download_chapters(requested_chapters, manga_directory, args.datasaver)
-    print("\nChapters download completed successfully")
+    print("\nChapters downloaded successfully")
 
     # archive
     if args.archive:
-        print("\nArchive downloaded chapters...")
+        print("\nArchiving downloaded chapters...")
         ar.archive_manga(manga_directory, args.archive, args.keep, args.ext)
         print("\nArchiving completed successfully")
 
@@ -100,10 +100,10 @@ def _search_manga_info(manga_url, language):
 
     _print_found_manga_list(manga_list_found)
 
-    user_input = input("Insert number (leave blank to cancel):\n> ")
+    user_input = input("Enter a number (leave blank to cancel):\n> ")
 
     if user_input == "":
-        raise ValueError("The program was canceled by the user")
+        raise ValueError("Canceled by user")
 
     return manga_list_found[int(user_input)-1]
 

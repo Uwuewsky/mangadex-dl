@@ -12,6 +12,7 @@ from requests import Session
 
 SESSION = Session()
 
+
 def init():
     """Initialize mangadex_dl."""
 
@@ -36,12 +37,16 @@ def init():
             "https": f"socks5://{args.socks}"
         }
 
-    if args.gui:
+    if args.archive_mode:
+        from mangadex_dl.archive import init_archive_mode
+        init_archive_mode(args)
+    elif args.gui:
         from mangadex_dl.gui import init_gui
         init_gui(args)
     else:
         from mangadex_dl.console import init_console
         init_console(args)
+
 
 def _parse_config(path):
     "Return config file args."
@@ -56,6 +61,7 @@ def _parse_config(path):
 
     return data
 
+
 def _parse_args():
     """Return command-line args."""
 
@@ -63,5 +69,7 @@ def _parse_args():
 
     p.add_argument("manga_urls", metavar="<manga_urls>", nargs="*",
                    help="specify manga url")
+    p.add_argument("-a", "--archive-mode", action="store_true",
+                   help="archiving mode")
 
     return vars(p.parse_args())

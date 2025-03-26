@@ -5,32 +5,45 @@ A Python package to download manga from [MangaDex.org](https://mangadex.org/).
 
 ## Requirements
   * [Python 3.11+](https://www.python.org/downloads/)
-  * [requests\[socks\] 2.28+](https://requests.readthedocs.io/en/latest/)
+  * [requests\[socks\] 2.28+](https://pypi.org/project/requests/)
+  * [PyMuPDF 1.25+](https://pypi.org/project/PyMuPDF/)
+  * [natsort 8.4+](https://pypi.org/project/natsort/)
 
 ## Installation & usage
-```
+```bash
 $ git clone https://github.com/Uwuewsky/mangadex-dl
 $ cd mangadex-dl/
 $ pip install -r requirements.txt
-```
-```
-$ start.py
-or
+$ ./start.py
+# or
 $ python3 -m mangadex_dl [manga_urls]
 ```
 
 ## Features
 
+### Download manga from MangaDex.org
+Search for manga by title or by UUID.
+
 ### Configuration
-The repository contains a `config.toml` file with default parameters. The file can be modified.
+You can configure the default settings via `config.toml` or via the GUI.
 
-### How can I download a chapter from a specific scanlate group?
-If duplicate chapters are found in the list of chapters, you can choose: download all available chapters; download only one copy; manually specify group priorities. Set the desired group to the highest priority and only the chapter from this group will be downloaded if possible.
+### Archiving to ZIP, CBZ or PDF
+Your downloaded manga is stored as individual images, but you can optionally make an archive or PDF document after downloading. Specify in the settings in what form you want to archive (individual chapters, individual volumes or the whole manga). Also specify the format/extension (zip, cbz, pdf). A table of contents is also created for PDF.
 
-### Archiving feature
-The archive function uses the entire manga directory, not just the part you downloaded during the current run; it will archive all existing folders according to the specified parameter `archive`. If you need to keep downloaded files without archiving, specify a different output directory.
+The archiving function can be used via `-a` argument: `$ python -m mangadex_dl -a dir1/ dir2/ ...`. The path should be the root directory of the manga, i.e. not the path to an volume or chapter.
 
-### Download range format (console mode)
+*Note*: this function archives the entire manga directory, not just the chapters you downloaded in this session. Specify a different output directory in the settings before downloading if you don't need it.
+
+### Download chapters from a specific scanlate group
+If the same chapter is uploaded by multiple groups, you can download all available chapters, download only one version, or manually filter the groups based on priority. Set the desired group to the highest priority, and the chapter from that group will be downloaded if possible.
+
+### GUI and console mode
+By default, mangadex_dl opens in GUI mode. Set `gui = false` in `config.toml` to open in console mode, which together with `download = all` can be useful for non-interactive downloads. Manga links can be specified as `$ python -m mangadex_dl url1 url2 ...` or via the file `$ python -m mangadex_dl < list.txt`, where `list.txt` contains the URL/UUID on a separate line.
+
+## Example usage
+
+### Console version:
+
 Here are some examples of valid downloading range input:
 * `v1`: Download all volume 1;
 * `v1(3)`: Download chapter 3 from volume 1;
@@ -46,9 +59,6 @@ Also some examples of INVALID input:
 * `1,2,3`: Obsolete format;
 * `v1(1,2,3-6)`: You cannot specify more than one chapter in parentheses, use the example above.
 
-## Example usage
-
-Console version:
 ```
 $ python3 -m mangadex_dl
 
@@ -101,11 +111,6 @@ Archive downloaded chapters...
 Archiving completed successfully
 
 Manga "Yotsuba&!" was successfully downloaded
-```
-
-Instead of manually inserting manga links, you can use a file redirection with console config options:
-```
-$ python -m mangadex_dl < list.txt
 ```
 
 ## License

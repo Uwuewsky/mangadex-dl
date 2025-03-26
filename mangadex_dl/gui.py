@@ -30,7 +30,7 @@ def init_gui(args):
 
 def _dl_gui(manga_url, args):
     root = Tk()
-    root.geometry("850x530")
+    root.geometry("850x600")
     try:
         app = _MangadexDlGui(root, manga_url, args)
         root.protocol("WM_DELETE_WINDOW", app.cb_on_closing)
@@ -462,7 +462,7 @@ class _MangadexDlGui:
         separator2.grid(column=0, row=3, columnspan=5, sticky=(W, E))
 
         # archive
-        label_archive = ttk.Label(frame, text="Archive:")
+        label_archive = ttk.Label(frame, text="Archive after\ndownloading:", justify=RIGHT)
         label_archive.grid(column=0, row=4, sticky=(E), pady=self.padding, padx=self.padding)
 
         radio_archive_a = ttk.Radiobutton(frame, text="None", variable=self.args.archive, value="False")
@@ -484,51 +484,53 @@ class _MangadexDlGui:
 
         radio_ext_a = ttk.Radiobutton(frame, text="*.zip", variable=self.args.ext, value="zip")
         radio_ext_b = ttk.Radiobutton(frame, text="*.cbz", variable=self.args.ext, value="cbz")
+        radio_ext_c = ttk.Radiobutton(frame, text="*.pdf", variable=self.args.ext, value="pdf")
 
         radio_ext_a.grid(column=1, row=7, sticky=(W), pady=self.padding, padx=self.padding)
         radio_ext_b.grid(column=2, row=7, sticky=(W), pady=self.padding, padx=self.padding)
+        radio_ext_c.grid(column=1, row=8, sticky=(W), pady=self.padding, padx=self.padding)
 
         separator4 = ttk.Separator(frame, orient=HORIZONTAL)
-        separator4.grid(column=0, row=8, columnspan=5, sticky=(W, E))
+        separator4.grid(column=0, row=9, columnspan=5, sticky=(W, E))
 
         # keep original
         label_keep = ttk.Label(frame, text="Keep original\nafter archiving:", justify=RIGHT)
-        label_keep.grid(column=0, row=9, sticky=(E), pady=self.padding, padx=self.padding)
+        label_keep.grid(column=0, row=10, sticky=(E), pady=self.padding, padx=self.padding)
 
         check_keep = ttk.Checkbutton(frame, text="", variable=self.args.keep, onvalue="1", offvalue="0")
-        check_keep.grid(column=1, row=9, sticky=(W), pady=self.padding, padx=self.padding)
+        check_keep.grid(column=1, row=10, sticky=(W), pady=self.padding, padx=self.padding)
 
         separator5 = ttk.Separator(frame, orient=HORIZONTAL)
-        separator5.grid(column=0, row=10, columnspan=5, sticky=(W, E))
+        separator5.grid(column=0, row=11, columnspan=5, sticky=(W, E))
 
         # data saver
-        label_datasaver = ttk.Label(frame, text="Download in\nworse quality:", justify=RIGHT)
-        label_datasaver.grid(column=0, row=11, sticky=(E), pady=self.padding, padx=self.padding)
+        label_datasaver = ttk.Label(frame, text="Download images\nin lower quality:", justify=RIGHT)
+        label_datasaver.grid(column=0, row=12, sticky=(E), pady=self.padding, padx=self.padding)
 
         check_datasaver = ttk.Checkbutton(frame, text="", variable=self.args.datasaver, onvalue="1", offvalue="0")
-        check_datasaver.grid(column=1, row=11, sticky=(W), pady=self.padding, padx=self.padding)
+        check_datasaver.grid(column=1, row=12, sticky=(W), pady=self.padding, padx=self.padding)
 
         separator6 = ttk.Separator(frame, orient=HORIZONTAL)
-        separator6.grid(column=0, row=12, columnspan=5, sticky=(W, E))
+        separator6.grid(column=0, row=13, columnspan=5, sticky=(W, E))
 
         # resolve duplicate
         label_resolve = ttk.Label(frame, text="How to resolve\nduplicates:", justify=RIGHT)
-        label_resolve.grid(column=0, row=13, sticky=(E), pady=self.padding, padx=self.padding)
+        label_resolve.grid(column=0, row=14, sticky=(E), pady=self.padding, padx=self.padding)
 
         radio_resolve_a = ttk.Radiobutton(frame, text="Display all", variable=self.args.resolve, value="all")
         radio_resolve_b = ttk.Radiobutton(frame, text="Display only one", variable=self.args.resolve, value="one")
-        radio_resolve_c = ttk.Radiobutton(frame, text="Manually set scanlate priorities", variable=self.args.resolve, value="manual")
+        radio_resolve_c = ttk.Radiobutton(frame, text="Filter manually", variable=self.args.resolve, value="manual")
 
-        radio_resolve_a.grid(column=1, row=13, sticky=(W), pady=self.padding, padx=self.padding)
-        radio_resolve_b.grid(column=1, row=14, sticky=(W), pady=self.padding, padx=self.padding)
-        radio_resolve_c.grid(column=2, row=13, sticky=(W), pady=self.padding, padx=self.padding)
+        radio_resolve_a.grid(column=1, row=14, sticky=(W), pady=self.padding, padx=self.padding)
+        radio_resolve_b.grid(column=1, row=15, sticky=(W), pady=self.padding, padx=self.padding)
+        radio_resolve_c.grid(column=2, row=14, sticky=(W), pady=self.padding, padx=self.padding)
 
         separator7 = ttk.Separator(frame, orient=HORIZONTAL)
-        separator7.grid(column=0, row=15, columnspan=5, sticky=(W, E))
+        separator7.grid(column=0, row=16, columnspan=5, sticky=(W, E))
 
         # help
-        label_help = ttk.Label(frame, text="Note: after changing language or duplicate settings reload URL in Search tab again.")
-        label_help.grid(column=0, row=16, columnspan=5, sticky=(W, E), pady=self.padding, padx=self.padding)
+        label_help = ttk.Label(frame, text="Note: After changing language or duplicate settings reload URL in the Search tab again.")
+        label_help.grid(column=0, row=17, columnspan=5, sticky=(W, E), pady=self.padding, padx=self.padding)
 
         return frame
 
@@ -632,8 +634,8 @@ class _MangadexDlGui:
         # ok, we can't make scrollbar for frame in tk
         frame = ttk.Frame()
 
-        label = ttk.Label(frame, text="You can manually prioritize scanlate groups.\n"
-                          "Specify this in the settings tab, reload the URL and set the priorities in this tab.")
+        label = ttk.Label(frame, text="You can manually set priorities for scanlate groups to filter duplicate chapters.\n"
+                          "Specify 'Filter manually' in the Settings tab and reload the URL.")
         label.grid(column=0, row=0, pady=self.padding, padx=self.padding)
 
         return frame
