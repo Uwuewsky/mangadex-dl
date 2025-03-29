@@ -29,7 +29,7 @@ def init_archive_mode(args):
             continue
         archive_manga(d, args.archive, args.keep, args.ext)
 
-    print("\nArchiving successfully completed!")
+    print("\nArchived successfully!")
 
 
 def archive_manga(manga_dir: Path, archive_mode: str, is_keep: bool, ext: str,
@@ -89,18 +89,22 @@ def _pdf_dir(arc_name: str, directory: Path, archive_mode: str) -> None:
             page = doc.new_page(width=rect.width, height=rect.height)
             page.insert_image(rect, filename=filename)
 
-    def volume2pdf(d: Path) -> None:
-        toc.append([1, d.name, page_num])
+    def volume2pdf(d: Path, level: int = 1) -> None:
         for c_dir in natsorted(d.glob("*")):
             if not c_dir.is_dir():
                 continue
-            chapter2pdf(c_dir, 2)
+            chapter2pdf(c_dir, level)
 
     def manga2pdf(d: Path) -> None:
-        for v_dir in natsorted(d.glob("*")):
+        l = natsorted(d.glob("*"))
+        for v_dir in l:
             if not v_dir.is_dir():
                 continue
-            volume2pdf(v_dir)
+            if len(l) > 1:
+                toc.append([1, v_dir.name, page_num])
+                volume2pdf(v_dir, 2)
+            else:
+                volume2pdf(v_dir, 1)
 
     if archive_mode == "chapter":
         chapter2pdf(directory)
