@@ -84,7 +84,8 @@ def _pdf_dir(arc_name: str, directory: Path, archive_mode: str) -> None:
                 continue
             page_num += 1
             img = pymupdf.open(filename)
-            rect = img[0].rect
+            img_info = img[0].get_image_info()[0]
+            rect = pymupdf.Rect(0.0, 0.0, img_info["width"], img_info["height"])
             img.close()
             page = doc.new_page(width=rect.width, height=rect.height)
             page.insert_image(rect, filename=filename)
