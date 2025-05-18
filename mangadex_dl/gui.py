@@ -19,6 +19,8 @@ from mangadex_dl import archive as ar
 from mangadex_dl import download as dl
 from mangadex_dl import duplicate as dup
 
+import tomlkit
+
 
 def init_gui(args):
     if args.manga_urls:
@@ -360,8 +362,29 @@ class _MangadexDlGui:
 
         self.status.set("Manga info received")
 
+    def cb_save_settings(self):
+        with open(Path("config.toml"), "rb") as f:
+            data = tomlkit.load(f)
+        data["language"] = self.args.language.get()
+        data["outdir"] = self.args.outdir.get()
+        data["archive"] = self.args.archive.get()
+        data["ext"] = self.args.ext.get()
+        data["keep"] = self.args.keep.get()
+        data["datasaver"] = self.args.datasaver.get()
+        data["resolve"] = self.args.resolve.get()
+        for k in data:
+            if data[k] == "False":
+                data[k] = False
+            if data[k] == "True":
+                data[k] = True
+        with open(Path("config.toml"), "w") as f:
+            tomlkit.dump(data, f)
+
     def cb_change_outdir(self):
-        self.args.outdir.set(filedialog.askdirectory())
+        d = filedialog.askdirectory()
+        if not d or not Path(d).is_dir():
+            d = "."
+        self.args.outdir.set(d)
 
     def cb_resolve_duplicates(self):
         index = 0
@@ -442,7 +465,10 @@ class _MangadexDlGui:
 
         combobox_lang = ttk.Combobox(frame, textvariable=self.args.language)
         combobox_lang["values"] = ("en", "ru", "fr", "uk", "ja", "zh", "ko", "id")
-        combobox_lang.grid(column=1, row=0, sticky=(W), pady=self.padding, padx=self.padding)
+        combobox_lang.grid(column=1, row=0, sticky=(W, E), pady=self.padding, padx=self.padding)
+
+        button_changes = ttk.Button(frame, text="Save settings", command=lambda: self.async_run(self.cb_save_settings))
+        button_changes.grid(column=2, row=0, sticky=(W), pady=self.padding, padx=self.padding)
 
         separator1 = ttk.Separator(frame, orient=HORIZONTAL)
         separator1.grid(column=0, row=1, columnspan=5, sticky=(W, E))

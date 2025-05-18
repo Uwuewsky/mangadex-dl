@@ -18,9 +18,22 @@ def init_archive_mode(args):
           f"Keep original files: {args.keep}")
 
     if not args.archive:
-        print("Error: Archiving mode not specified!\n"
-              "Change the 'archive' setting in the config.toml file!")
-        return
+        print("Select the archiving mode:\n"
+              " 1. Whole manga\n"
+              " 2. By volumes\n"
+              " 3. By chapters")
+        t = int(input("> ")) - 1
+        args.archive = ["manga", "volume", "chapter"][t]
+        print(args.archive)
+
+    if not args.manga_urls:
+        print("Paste the absolute path to the manga directory:\n"
+              "(leave blank to complete)")
+        while True:
+            t = input("> ")
+            if not t:
+                break
+            args.manga_urls.append(t)
 
     for url in args.manga_urls:
         d = Path(url)

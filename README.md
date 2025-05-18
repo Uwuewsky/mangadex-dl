@@ -8,6 +8,7 @@ A Python package to download manga from [MangaDex.org](https://mangadex.org/).
   * [requests\[socks\] 2.28+](https://pypi.org/project/requests/)
   * [PyMuPDF 1.25+](https://pypi.org/project/PyMuPDF/)
   * [natsort 8.4+](https://pypi.org/project/natsort/)
+  * [tomlkit 0.13+](https://pypi.org/project/tomlkit/)
 
 ## Installation & usage
 ```bash
